@@ -1,11 +1,12 @@
 include <modules/gridfinity_modules.scad>
 
 length = 2;
-width = 3;
+width = 2;
 // multiple of 7mm
-height = 7;// [2, 3, 4, 5, 6]
-numbchambers = 2;
-withLabel = false;
+height = 6;// [2, 3, 4, 5, 6]
+numbchambers = 1;
+withLabel = true;
+shortLabel = true;
 fingerslide = false;
 
 
@@ -50,7 +51,11 @@ module partitioned_cavity(num_x=2, num_y=1, num_z=2, chambers=3) {
     if (withLabel) {
       hull() for (i=[0,1, 2])
       translate([-gridfinity_pitch/2, yz[i][0], yz[i][1]])
-      rotate([0, 90, 0]) cylinder(d=bar_d, h=num_x*gridfinity_pitch, $fn=24);
+      rotate([0, 90, 0])
+        if(shortLabel)
+          cylinder(d=bar_d, h=gridfinity_pitch, $fn=24);
+        else
+          cylinder(d=bar_d, h=num_x*gridfinity_pitch, $fn=24);
     }
   }
 }
@@ -67,13 +72,13 @@ module basic_cavity(num_x=2, num_y=1, num_z=2) {
     union() {
       // cut downward from base
       hull() cornercopy(17, num_x, num_y) {
-        translate([0, 0, zpoint-eps]) cylinder(d=2.3, h=1.2+2*eps, $fn=24);
+        translate([0, 0, zpoint-eps]) cylinder(d=2.2, h=1.2+2*eps, $fn=24);
       }
       
       hull() cornercopy(17, num_x, num_y) {
         // create bevels below the lip
-        translate([0, 0, zpoint-0.1]) cylinder(d=2.3, h=0.1, $fn=24);
-        translate([0, 0, zpoint-q-q2]) cylinder(d=2.3+2*q, h=q2, $fn=32);
+        translate([0, 0, zpoint-0.1]) cylinder(d=2.2, h=0.1, $fn=24);
+        translate([0, 0, zpoint-q-q2]) cylinder(d=2.2+2*q, h=q2, $fn=32);
         // create rounded bottom of bowl (8.5 is high enough to not expose gaps)
         translate([0, 0, 8.5]) sphere(d=2.3+2*q, $fn=32);
       }
